@@ -36,7 +36,7 @@ def querySession():
     if userPhone is None:
         sessionExit = 0
     else:
-        sessionExit = 1  
+        sessionExit = 1
     res = {
         "sessionExist": sessionExit,
     }

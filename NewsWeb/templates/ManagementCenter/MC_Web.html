@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<title>管理员-网站管理</title>
+	<link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+	<link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+	<link rel="stylesheet" href="../../assets/css/base.css">
+	<link rel="stylesheet" href="../../assets/css/MC.css">
+</head>
+<body>
+    <!-- particles.js container -->
+	<div id="particles-js"></div>
+	    <div id="topbox">
+            <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+            <span id="M">管理员</span>
+        </div>
+		<img src="./管理员头像.png" alt="头像" id="touxiang">
+		<span id="MC_">
+			管理中心
+		</span>
+		<div id="outbox">
+			<nav class="switch_nav">
+				<a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+				<a href="javascript:;" id="switch_login" class="switch_btn on">网站管理</a>
+                <a href="./MC_user.html" id="switch_signup" class="switch_btn">用户管理</a>
+				<a href="./MC_addNews.html"id="switch_signup" class="switch_btn">添加新闻</a>
+                <div class="switch_bottom" id="switch_bottom"></div>
+			</nav>
+			<hr id="highhr">
+            <div id="sheetbox">
+                <table id="sheet">
+                    <tr id="sheettop">
+                        <td>网站名称</td>
+                        <td>网址</td>
+                        <td>操作</td>
+                    </tr>
+                    <hr id="sheethr1">
+                    <tr>
+                        <td>网站名称</td>
+                        <td><a href="#">网址跳转</a></td>
+                        <td>
+                            <button class="change" id="change1" onclick="gotochangeNews()">编辑</button>
+                            <button class="del" id="del1">删除</button>
+                        </td>
+                    </tr>
+                    <hr id="sheethr2">
+                    <tr>
+                        <td>网站名称</td>
+                        <td><a href="#">网址跳转</a></td>
+                        <td>
+                            <button class="change" id="change2" onclick="gotochangeNews()">编辑</button>
+                            <button class="del" id="del2">删除</button>
+                        </td>
+                    </tr>
+                    <hr id="sheethr3">
+                    <tr>
+                        <td>网站名称</td>
+                        <td><a href="#">网址跳转</a></td>
+                        <td>
+                            <button class="change" id="change3" onclick="gotochangeNews()">编辑</button>
+                            <button class="del" id="del3">删除</button>
+                        </td>
+                    </tr>
+                    <hr id="sheethr4">
+                    <tr>
+                        <td>网站名称</td>
+                        <td><a href="#">网址跳转</a></td>
+                        <td>
+                            <button class="change" id="change4" onclick="gotochangeNews()">编辑</button>
+                            <button class="del" id="del4">删除</button>
+                        </td>
+                    </tr>
+                    <hr id="sheethr5">
+                    <tr>
+                        <td>网站名称</td>
+                        <td><a href="#">网址跳转</a></td>
+                        <td>
+                            <button class="change" id="change5" onclick="gotochangeNews()">编辑</button>
+                            <button class="del" id="del5">删除</button>
+                        </td>
+                    </tr>
+                    <hr id="sheethr6">
+                </table>
+                <ul class="pagination">
+                    <li><a href="#">«</a></li>
+                    <li><span>1</span></li>
+                    <li><a href="#">»</a></li>
+                </ul>
+            </div>
+		</div>  
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+	<script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="../../assets/libs/particles/particles.min.js"></script>
+	<script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        //单击左上角管理员返回登录界面
+        document.getElementById("M").onclick=function() {
+            location.replace("../login.html");
+        };
+        function gotochangeNews(){
+            location.replace("./MC_changeNews.html");
+        }
+    </script>
+</body>
+</html>

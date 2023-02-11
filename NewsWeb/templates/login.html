@@ -23,7 +23,7 @@
 		</nav>
 		<div id="login">
 			<!-- 跳转页面用户界面                ↓ -->
-			<form method="post" action="./UserCenter/main/main.html">
+			<form>
 				<ul class="group_input">
 					<li>
 						<input type="text" class="mobile required" id="mobile" placeholder="账号" />
@@ -106,7 +106,7 @@
 				$(this).triggerHandler("blur");
 			});
 
-					//点击重置按钮时，通过trigger()来触发文本框的失去焦点事件
+			//点击重置按钮时，通过trigger()来触发文本框的失去焦点事件
 			$("#btnSubmit").click(function(){
 				//trigger 事件执行完后，浏览器会为submit按钮获得焦点
 				$("form .required:input").trigger("blur"); 
@@ -114,8 +114,28 @@
 				if(numError){
 					return false;
 				}
-				alert('登陆成功！')
-				
+				alert('登陆成功！');
+				// 发送post请求
+				$.ajax({
+                    url: 'http://127.0.0.1:5000/api/login',
+                    type: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify({
+						mobile:获取手机号部分的数据,
+						password:获取密码部分的数据
+					}),
+                    // data: {name: "xu", foo: 'bar'},
+					// 如果请求成功做的处理
+                    success: function(res){
+                        if (res.code === 200) {
+                            window.navigate("./UserCenter/main/main.html");
+                        }   
+                    },
+					// 如果请求失败做的处理
+                    error: function(e) {
+						alert('请求异常！状态码：' + res.code.toString());
+                    }
+                });
 			});
 		})
 		

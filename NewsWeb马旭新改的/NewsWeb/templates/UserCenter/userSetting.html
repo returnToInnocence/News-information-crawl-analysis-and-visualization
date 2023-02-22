@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<title>管理员-新闻管理</title>
+	<link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+	<link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+	<link rel="stylesheet" href="../../assets/css/base.css">
+	<link rel="stylesheet" href="../../assets/css/MC.css">  
+</head>
+<body>
+    <div id="particles-js"></div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+	<script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="../../assets/libs/particles/particles.min.js"></script>
+	<script src="../../assets/libs/particles/js/app.js"></script>
+        <div id="topbox">
+            <img src="../ManagementCenter/管理员头像-小.png" alt="头像" id="userhand">
+            <span id="U" title="点我退出登录">用户昵称用户昵称用户昵称用户昵称用户昵称</span>
+            <button id="main"><img src="./img/主页.png" alt="主页">主页</button>
+            <button id="keyword"><img src="./img/关键字.png" alt="关键字">关键字</button>
+            <button id="classify"><img src="./img/分类.png" alt="分类">分类</button>
+            <button id="visual"><img src="./img/可视化.png" alt="可视化">可视化</button>
+        </div>
+        <img src="./img/个人资料.png" alt="个人资料" id="dataimg">
+        <span id="datafont">个人资料</span>
+        
+        <div id="databox">
+            <span id="basedata">基本信息</span>  
+            <img src="./img/注销账号.png" alt="注销账号" id="deldataimg">
+            <span id="deldatafont">注销账号</span>
+            <hr id="datahr">
+            <img src="./img/用户头像大.png" alt="头像" id="userheadbig">
+            <span id="name1">昵称：</span>
+            <span id="password1">密码：</span>
+            <form method="post" action="./userSetting.html">
+                <input type="text" class="name2 required" value="用户昵称用户昵称用户昵称用户昵称用户昵称" id="name2">
+                <input type="password" class="password2 required" value="20zimu20zimu20zimu20" id="password2">
+                <!-- <button type="submit" id="btnSubmit1" onclick="sendSubmit()">修改昵称</button> -->
+                <button type="submit" id="btnSubmit2" onclick="sendSubmit()">修改密码</button>
+            </form>
+        </div>
+    <script>
+        document.getElementById("deldataimg").onclick=function(){
+            var flag=window.confirm("确定要注销账号么!如果注销账号会导致所有数据丢失!");
+            if(flag){
+                location.replace("../login.html");
+            }
+        }
+        document.getElementById("deldatafont").onclick=function(){
+            var flag=window.confirm("确定要注销账号么!如果注销账号会导致所有数据丢失!");
+            if(flag){
+                location.replace("../login.html");
+            }
+        }
+        document.getElementById("U").onclick=function(){
+            location.replace("../login.html");
+        }
+        document.getElementById("main").onclick=function(){
+            location.replace("./main/main.html");
+        };
+        document.getElementById("keyword").onclick=function(){
+            location.replace("./keyword.html")
+        };
+        document.getElementById("classify").onclick=function(){
+            location.replace("./classify/classify.html")
+        };
+        document.getElementById("visual").onclick=function(){
+            location.replace("./visual.html")
+        };
+
+        $(function(){
+            //为表单的必填文本框添加提示信息（选择form中的所有后代input元素）
+            // $("form :input.required").each(function () {
+            //     //通过jquery api：$("HTML字符串") 创建jquery对象
+            //     var $required = $("<strong class='high'>*</strong>");
+            //     //添加到this对象的父级对象下
+            //     $(this).parent().append($required);
+            // });
+                // var errorMsg = $(".error-msg").text();
+            //为表单元素添加失去焦点事件
+                $("form :input").blur(function(){
+                    var $parent = $(this).parent();
+                    $parent.find(".msg").remove(); //删除以前的提醒元素（find()：查找匹配元素集中元素的所有匹配元素）
+                    // //验证姓名
+                    // if($(this).is("#name2")){
+                    //     var nameVal = $.trim(this.value);
+                    //     var regName = /[~#^$@%&!*()<>:;'"{}【】  ]/;
+                    //     if(nameVal == "" || nameVal.length < 2 || regName.test(nameVal)){
+                    //         var errorMsg = " 姓名非空，长度2-20位，不包含特殊字符！";
+                    //         $parent.append("<span class='msg onError'>" + errorMsg + "</span>");
+                    //     } else{
+                    //         var okMsg=" 输入正确";
+                    //         $parent.append("<span class='msg onSuccess'>" + okMsg + "</span>");
+                    //     }
+                    // }			
+                    //验证密码
+                    if($(this).is("#password2")){
+                        var psdVal = $.trim(this.value);
+                        var regPsd = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/;
+                        if(psdVal== "" || !regPsd.test(psdVal)){
+                            var errorMsg = " 密码为6-20位字母、数字的组合！";
+                            $parent.append("<span class='msg onError'>" + errorMsg + "</span>");
+                        }
+                        else{
+                            var okMsg=" 输入正确";
+                            $parent.append("<span class='msg onSuccess'>" + okMsg + "</span>");
+                        }
+                    }
+                }).keyup(function(){
+                    //triggerHandler 防止事件执行完后，浏览器自动为标签获得焦点
+                    $(this).triggerHandler("blur"); 
+                }).focus(function(){
+                    $(this).triggerHandler("blur");
+                });
+                        //点击重置按钮时，通过trigger()来触发文本框的失去焦点事件
+                // $("#btnSubmit1").click(function(){
+                //     //trigger 事件执行完后，浏览器会为submit按钮获得焦点
+                //     $("form :input.required.name1").trigger("blur"); 
+                //     var numError = $("form .onError").length;
+                //     if(numError){
+                //         alert("请输入正确的格式");
+                //         return false;
+                //     }else{
+                //         alert("修改成功");
+                //         return true;
+                //     }      
+                // });
+                $("#btnSubmit2").click(function(){
+                    //trigger 事件执行完后，浏览器会为submit按钮获得焦点
+                    $("form :input.required.password2").trigger("blur"); 
+                    var numError = $("form .onError").length;
+                    if(numError){
+                        alert("请输入正确的格式")
+                        return false;
+                    }
+                    else{
+                        alert("修改成功");
+                        return true;
+                    }
+                });   
+            })
+    </script>
+</body>
+</html>

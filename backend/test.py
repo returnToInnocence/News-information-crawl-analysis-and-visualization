@@ -24,13 +24,70 @@ class HttpApiTest:
         res = requests.get(url, params=data)
         return res.text
 
+# 普通用户登录接口测试
+def loginUserTest():
+    httpApi = HttpApiTest()
+    # 成功情况
+    res = httpApi.testPost("http://localhost:5000/login/", data={
+        "user_id": 18031589519,
+        "user_password": "123",
+        "user_permission": 0
+    })
+    print(res)
+    # 用户不存在情况
+    res = httpApi.testPost("http://localhost:5000/login/", data={
+        "user_id": 0,
+        "user_password": "123",
+        "user_permission": 0
+    })
+    print(res)
+    # 密码错误情况
+    res = httpApi.testPost("http://localhost:5000/login/", data={
+        "user_id": 0,
+        "user_password": "0",
+        "user_permission": 0
+    })
+    print(res)
+
+# 管理员登录接口测试
+def loginAdmainTest():
+    httpApi = HttpApiTest()
+    # 成功情况
+    res = httpApi.testPost("http://localhost:5000/login/", data={
+        "user_id": 1,
+        "user_password": "1",
+        "user_permission": 1
+    })
+    print(res)
+    # 密码错误情况
+    res = httpApi.testPost("http://localhost:5000/login/", data={
+        "user_id": 1,
+        "user_password": "0",
+        "user_permission": 1
+    })
+    print(res)
+
+
+def registerTest():
+    httpApi = HttpApiTest()
+    res = httpApi.testPost("http://localhost:5000/register/", data={
+        "user_id": 15903154288,
+        "user_name": "李虹均2",
+        "user_password": "123",
+    })
+    print(res)
 
 if __name__ == '__main__':
+    pass
+    # 通过
+    # loginUserTest()
+    # loginAdmainTest()
+    # registerTest()
     # 实例化对象
-    httpApi = HttpApiTest()
-    res = httpApi.testGet("http://localhost:5000/", data={
-        "id": 1
-    })
+    # httpApi = HttpApiTest()
+    # res = httpApi.testGet("http://localhost:5000/", data={
+    #     "id": 1
+    # })
     # res = httpApi.testPost("http://localhost:5000/insert/", data={
     #     "id": 4,
     #     "email": "第四个测试邮箱",
@@ -43,4 +100,4 @@ if __name__ == '__main__':
     # res = httpApi.testDelete("http://localhost:5000/delete/", data={
     #     "id": 4
     # })
-    print(res)
+    # print(res)

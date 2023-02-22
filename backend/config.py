@@ -3,4 +3,4 @@ mysqlUser = "LiHongJun"
 mysqlPassword = "Shujuku2002"
 mysqlHost = "sh-cynosdbmysql-grp-hdc5p1zy.sql.tencentcdb.com"
 mysqlPort = 23000
-mysqlDb = "socia"
+mysqlDb = "databasedesign"

@@ -13,9 +13,6 @@ from database import db
 # 导入数据库配置
 from config import *
 
-# 类视图
-from flask.views import MethodView
-
 # 实例化flask
 app = Flask(__name__)
 
@@ -35,39 +32,9 @@ db.init_app(app)
 CORS(app, cors_allowed_origins="*")
 
 
-# 类视图接口
-class ManageApi(MethodView):
-    # 查询get请求
-    def get(self):
-        userId = request.args.get("id", None)
-        _sql = "select `email`, `password` from `user` where `id` = {}".format(userId)
-        print(_sql)
-        user = db.session.execute(text(_sql)).fetchone()
-        print(user)
-        # 加入了异常逻辑
-        if user:
-            res = {key: value for key, value in zip(['email', 'password'], tuple(user))}
-            return jsonify(
-                {
-                    "errcode": 0,
-                    "data": res
-                }
-            )
-        else:
-            return jsonify(
-                {
-                    "errcode": 1,
-                    "data": {}
-                }
-            )
-
-
-# 一定要在对应类视图下面配置路由组规则
-app.add_url_rule("/", view_func=ManageApi.as_view("ManageApi"))
-
 # 注意一个问题，采用restful风格的接口的话，用的方法比较多，而对应的request获取参数的方法也是不同的
 # 现代编程很少有一个功能一个接口这种形式了，而是采用类视图来进行封装，因此下面这种接口我全部注释掉
-# # 删除接口
+# 删除接口
 # @app.route("/delete/", methods=["DELETE"])
 # def deleteApi():
 #     userId = request.args.get("id", None)
@@ -142,6 +109,91 @@ app.add_url_rule("/", view_func=ManageApi.as_view("ManageApi"))
 #
 #     res = "good"
 #     return jsonify({"data": res})
+
+def loginUser(user_id, user_password):
+    _sql = " select `user_name`, `user_password` from `user_info` where `user_id` = {} limit 1".format(
+        user_id)
+    print(_sql)
+    user = db.session.execute(text(_sql)).fetchone()
+    if user:
+        user = tuple(user)
+        user = {key: value for key, value in zip(['user_name', 'user_password'], user)}
+        if user_password == user["user_password"]:
+            user["user_id"] = user_id
+            res = {
+                "errcode": 0,  # 匹配成功
+                "data": user
+            }
+        else:
+            res = {
+                "errcode": 2,  # 匹配此账号密码错误
+                "data": {}
+            }
+    else:
+        res = {
+            "errcode": 1,  # 代表此账号不存在
+            "data": {}
+        }
+    return res
+
+def loginAdmin(user_id, user_password):
+    _sql = " select `user_password` from `user_info` where `user_id` = {} limit 1".format(
+        user_id)
+    print(_sql)
+    admain = db.session.execute(text(_sql)).fetchone()
+    admain = tuple(admain)
+    admain = {key: value for key, value in zip(['user_password'], admain)}
+    if user_password == admain["user_password"]:
+        res = {
+            "errcode": 0,  # 登录成功
+        }
+    else:
+        res = {
+            "errcode": 1,  # 登录密码错误
+        }
+    return res
+
+# 管理员和用户用同一个接口，根据permission进行比较
+# id用来做查询，permission用来做管理员和用户区分，这是因为id很可能管理员人数拓展，因此这样考虑的
+@app.route("/login/", methods=["POST"])
+def loginApi():
+    user_id = request.form.get("user_id", None)
+    user_password = request.form.get("user_password", None)
+    user_permission = request.form.get("user_permission", None)
+
+    if user_permission == 0:
+        res = loginUser(user_id, user_password)
+    else:
+        res = loginAdmin(user_id,user_password)
+    return jsonify(res)
+
+
+@app.route("/register/", methods=["POST"])
+def register():
+    user_id = request.form.get("user_id", None)
+    user_name = request.form.get("user_name", None)
+    user_password = request.form.get("user_password", None)
+    user_permission = 0
+
+    # 先查询是否用户存在
+    temp = loginUser(user_id, user_password)
+    if temp["errcode"] != 1:
+        res = {
+            "errcode": 1  # 注册失败，用户已经存在
+        }
+    else:
+        _sql = "insert into `user_info` (`user_id`, `user_name`, `user_password`, `user_permission`)" \
+               " values ({} , '{}', '{}', {})".format(user_id, user_name, user_password, user_permission)
+        print(_sql)
+        db.session.execute(text(_sql))
+        res = {
+            "errcode": 0  # 插入成功
+        }
+    return res
+
+
+
+
 
 if __name__ == '__main__':
     # debug模式开启

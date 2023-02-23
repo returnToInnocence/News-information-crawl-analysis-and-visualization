@@ -103,6 +103,7 @@ def getData(baseurl, a):
                 datalist5.append(data5)
                 time.sleep(180)
                 print("完成%.3d条" % a)
+    print("全部完成")
     print("共保存%.3d条新闻数据" % a)
     return datalist1, datalist2, datalist3, datalist4, datalist5, a
 

@@ -124,6 +124,11 @@ CORS(app, cors_allowed_origins="*")
 #     res = "good"
 #     return jsonify({"data": res})
 
+# 热度算法，无论文章是否存在，都需要进行热度更新
+def hotAlg(news_id, news_hot, news_time):
+    
+    pass
+
 # 搜狐新闻爬取
 def spyderSouHu():
     a = 0
@@ -154,6 +159,7 @@ def spyderSouHu():
         print(newExist)
         if newExist:
             print("这个文章的标题有相同的")
+            hotAlg(news_id, news_hot, news_time)
             continue
         else:
             print("这个文章的标题没有相同的")
@@ -166,6 +172,7 @@ def spyderSouHu():
                 newIdExist = db.session.execute(text(_sql)).fetchone()
                 if newIdExist:
                     print("这篇文章的id存在")
+                    hotAlg(news_id, news_hot, news_time)
                     continue
                 else:
                     print("这篇文章的id不存在")
@@ -174,6 +181,11 @@ def spyderSouHu():
                    " values ('{}' , '{}', '{}', '{}', '{}', '{}')".format(news_id, news_title, "搜狐新闻", news_time, news_content, news_url)
             print(_sql)
             db.session.execute(text(_sql))
+
+            # 在这里保存热度，同时计算热度差值
+            # 先写一个热度算法，目标是获取这个新闻的历史热度，计算出当前时间的热度增量，以及历史热度的数值，进行更新
+            # 先拿news_id写热度
+            hotAlg(news_id, news_hot, news_time)
     print("保存完毕")
 
 

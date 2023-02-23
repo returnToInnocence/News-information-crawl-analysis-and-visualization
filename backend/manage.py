@@ -19,11 +19,13 @@ from spyder.spyderSouhu import *
 
 # 引入定时器，用来定时对网站进行爬取，以二十四小时为时间
 from flask_apscheduler import APScheduler
-import time
+
+from myLib import createId
 
 class Config(object):
     SCHEDULER_TIMEZONE = 'Asia/Shanghai'  # 配置时区
     SCHEDULER_API_ENABLED = True  # 添加API
+
 
 scheduler = APScheduler()
 
@@ -46,88 +48,10 @@ db.init_app(app)
 CORS(app, cors_allowed_origins="*")
 
 
-# 注意一个问题，采用restful风格的接口的话，用的方法比较多，而对应的request获取参数的方法也是不同的
-# 现代编程很少有一个功能一个接口这种形式了，而是采用类视图来进行封装，因此下面这种接口我全部注释掉
-# 删除接口
-# @app.route("/delete/", methods=["DELETE"])
-# def deleteApi():
-#     userId = request.args.get("id", None)
-#
-#     # 下划线主要是提示自己这个东西不能被改变，是写死的内容
-#     _sql = "delete from `user` where `id` = {}".format(userId)
-#
-#     print(_sql)
-#
-#     db.session.execute(text(_sql))
-#
-#     return jsonify({"errcode": 0, "msg": "数据删除成功"})
-#
-# # 修改接口，以修改密码为例
-# @app.route("/update/", methods=["PUT"])
-# def updateApi():
-#     userId = request.form.get("id", None)
-#     password = request.form.get("password", None)
-#
-#     _sql = "update `user` set `password` = '{}' where `id` = {}".format(password, userId)
-#
-#     print(_sql)
-#
-#     db.session.execute(text(_sql))
-#
-#     return jsonify({"errcode": 0, "msg": "数据修改成功"})
-#
-#
-# # 插入接口
-# @app.route("/insert/", methods=["POST"])
-# def insertApi():
-#     userId = request.form.get("id", None)
-#     email = request.form.get("email", None)
-#     password = request.form.get("password", None)
-#
-#     # 执行插入操作，注意一个问题，mysql里面的表名之类的最好用引号引起来，
-#     # 因为如果不引起来的话，有可能会触发mysql中的某些字段，比如有一个order表，
-#     # 那么就会合order冲突，这个时候用撇号引起来就可以避免这个问题
-#
-#     _sql = "insert into `user` (`id`, `email`, `password`) values ({} , '{}', '{}')".format(userId, email, password)
-#
-#     print(_sql)
-#
-#     db.session.execute(text(_sql))
-#
-#     return jsonify({"errcode": 0, "msg": "数据插入成功"})
-#
-#
-# # 配置路由
-# @app.route("/", methods=["GET"])
-# def index():
-#     res = {"msg": "做数据库课设尝试"}
-#     # 序列化，原始数据类型转化为json格式
-#
-#     # 查询所有用户
-#     userlist = db.session.execute(text(" select * from user ")).fetchall()
-#
-#     res = []
-#     for item in userlist:
-#         data = tuple(item)
-#         tmp = {key: value for key, value in zip(['id', 'email', 'password'], data)}
-#         res.append(tmp)
-#
-#     # 插入数据操作
-#     db.session.execute(text(" insert into user (id, email, password) values (3, '第三个邮箱', '第三个密码') "))
-#
-#     # 修改数据
-#     db.session.execute(text(" update user set password = '123456' where id = 3"))
-#
-#     # 删除数据
-#     db.session.execute(text(" delete from user where id = 3"))
-#
-#     res = "good"
-#     return jsonify({"data": res})
-
 # 热度算法，无论文章是否存在，都需要进行热度更新
 def hotAlg(news_id, news_hot, news_time):
-    
     pass
+
 
 # 搜狐新闻爬取
 def spyderSouHu():
@@ -165,7 +89,8 @@ def spyderSouHu():
             print("这个文章的标题没有相同的")
             # 确定每次生成的news_id都是唯一的
             while True:
-                news_id = str(uuid.uuid1().int >> 64)
+                # id生成采用自己设计的id生成方式来做
+                news_id = createId.get_short_id()
                 _sql = " select `news_title` from `news_bs4` where `news_id` = '{}'".format(
                     news_id)
                 print(_sql)
@@ -178,7 +103,8 @@ def spyderSouHu():
                     print("这篇文章的id不存在")
                     break
             _sql = "insert into `news_bs4` (`news_id`, `news_title`, `news_source`, `news_time`, `news_content`, `news_url`)" \
-                   " values ('{}' , '{}', '{}', '{}', '{}', '{}')".format(news_id, news_title, "搜狐新闻", news_time, news_content, news_url)
+                   " values ('{}' , '{}', '{}', '{}', '{}', '{}')".format(news_id, news_title, "搜狐新闻", news_time,
+                                                                          news_content, news_url)
             print(_sql)
             db.session.execute(text(_sql))
 
@@ -187,6 +113,39 @@ def spyderSouHu():
             # 先拿news_id写热度
             hotAlg(news_id, news_hot, news_time)
     print("保存完毕")
+
+
+# 专门为了爬数据到数据库而改的接口
+# # 搜狐新闻爬取
+# def spyderSouHu():
+#     a = 0
+#     # 爬取网页，获取数据
+#     baseurl = "https://www.sohu.com"
+#     Datalist1, Datalist2, Datalist3, Datalist4, Datalist5, a = getData(baseurl, a)
+#     # 保存数据
+#     for i in range(0, a):
+#         # 新闻标题
+#         news_title = ''.join('%s' % a for a in Datalist1[i - 1])
+#         # 新闻文本
+#         news_content = ''.join('%s' % a for a in Datalist2[i - 1])
+#         # 新闻链接
+#         news_url = ''.join('%s' % a for a in Datalist3[i - 1])
+#         # 新闻热度
+#         news_hot = ''.join('%s' % a for a in Datalist4[i - 1])
+#         # 新闻时间
+#         news_time = ''.join('%s' % a for a in Datalist5[i - 1])
+#         if news_title == '' or news_content == '':
+#             continue
+#
+#         news_time = news_time.split(' ')[0]
+#         news_id = createId.get_short_id()
+#         _sql = "insert into `news_bs4` (`news_id`, `news_title`, `news_source`, `news_time`, `news_content`, `news_url`)" \
+#                " values ('{}' , '{}', '{}', '{}', '{}', '{}')".format(news_id, news_title, "搜狐新闻", news_time,
+#                                                                       news_content, news_url)
+#         db.session.execute(text(_sql))
+#
+#     print("保存完毕")
+
 
 
 def loginUser(user_id, user_password):
@@ -215,6 +174,7 @@ def loginUser(user_id, user_password):
         }
     return res
 
+
 def loginAdmin(user_id, user_password):
     _sql = " select `user_password` from `user_info` where `user_id` = {} limit 1".format(
         user_id)
@@ -232,6 +192,7 @@ def loginAdmin(user_id, user_password):
         }
     return res
 
+
 # 管理员和用户用同一个接口，根据permission进行比较
 # id用来做查询，permission用来做管理员和用户区分，这是因为id很可能管理员人数拓展，因此这样考虑的
 @app.route("/login/", methods=["POST"])
@@ -243,7 +204,7 @@ def loginApi():
     if user_permission == 0:
         res = loginUser(user_id, user_password)
     else:
-        res = loginAdmin(user_id,user_password)
+        res = loginAdmin(user_id, user_password)
     return jsonify(res)
 
 
@@ -270,6 +231,7 @@ def register():
         }
     return res
 
+
 @app.route("/userSpyder/", methods=["GET"])
 def userSpyder():
     spyderSouHu()
@@ -277,11 +239,13 @@ def userSpyder():
 
 
 if __name__ == '__main__':
-    app.config.from_object(Config())
-    scheduler.init_app(app)
-    # add_job() 添加任务
-    # 每过12小时，向数据库中添加一次信息
-    scheduler.add_job(func=spyderSouHu, args=(), trigger='interval', hours=12, id='interval_task')
-    scheduler.start()
-    # debug模式开启
-    app.run(debug=True, host="0.0.0.0", port=5000, use_reloader=False)
+    app.run(debug=False, host="0.0.0.0", port=5000)
+
+    # app.config.from_object(Config())
+    # scheduler.init_app(app)
+    # # add_job() 添加任务
+    # # 每过12小时，向数据库中添加一次信息
+    # scheduler.add_job(func=spyderSouHu, args=(), trigger='interval', hours=12, id='interval_task')
+    # scheduler.start()
+    # # debug模式开启
+    # app.run(debug=False, host="0.0.0.0", port=5000, use_reloader=False)

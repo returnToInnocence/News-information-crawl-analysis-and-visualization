@@ -30,7 +30,7 @@ def getData(baseurl, a):
     soup = BeautifulSoup(html, "html.parser")
     for item in soup.select('.list16'):
         for c in item.select('li'):
-            if times < 50:
+            if times < 20:
                 # 三分钟以后继续发下一个
 
                 data1 = []

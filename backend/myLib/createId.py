@@ -1,8 +1,5 @@
-# 目标是测试一下uuid生成的id究竟有多长，是否可以减短一些
-# import uuid
-# a = uuid.uuid1().int >> 64
-# print(int(a) / 8)
-
+# 生成短8位唯一id
+# 参考文档 https://blog.51cto.com/u_14246112/3157783
 import uuid
 
 array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -23,6 +20,3 @@ def get_short_id():
         val = int(id[start:end], 16)
         buffer.append(array[val % 62])
     return "".join(buffer)
-
-
-print(get_short_id())

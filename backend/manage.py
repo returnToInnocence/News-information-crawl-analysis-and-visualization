@@ -80,7 +80,7 @@ def spyderSouHu():
             news_title)
         print(_sql)
         newExist = db.session.execute(text(_sql)).fetchone()
-        print(newExist)
+        # print(newExist)
         if newExist:
             print("这个文章的标题有相同的")
             hotAlg(news_id, news_hot, news_time)
@@ -113,6 +113,17 @@ def spyderSouHu():
             # 先拿news_id写热度
             hotAlg(news_id, news_hot, news_time)
     print("保存完毕")
+
+
+@app.route("/getArticle/", methods=["POST"])
+def getArticle():
+    # 返回值应该是
+    # - 新闻标题
+    # - 新闻摘要
+    # - 新闻分类
+    # - 新闻关键词
+    # 所以这个功能想要实现的话，首先要用ai接口生成对应的内容才行
+    pass
 
 
 # 专门为了爬数据到数据库而改的接口
@@ -231,15 +242,19 @@ def register():
         }
     return res
 
-
-@app.route("/userSpyder/", methods=["GET"])
-def userSpyder():
-    spyderSouHu()
-    return jsonify({"errcode": "没问题"})
+# 爬虫测试用的
+# @app.route("/userSpyder/", methods=["GET"])
+# def userSpyder():
+#     spyderSouHu()
+#     return jsonify({"errcode": "没问题"})
 
 
 if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=5000)
+
+    # 现在调试的时候先不启动计时器
+    # 感觉有点浪费资源
+
 
     # app.config.from_object(Config())
     # scheduler.init_app(app)

@@ -81,11 +81,20 @@ def registerTest():
     })
     print(res)
 
+# 用户主页获取文章接口测试
+def getArticleTest():
+    httpApi = HttpApiTest()
+    res = httpApi.testPost("http://localhost:5000/getArticle/", data={
+        "page": 1
+    })
+    print(res)
+
 
 if __name__ == '__main__':
-    httpApi = HttpApiTest()
-    res = httpApi.testGet("http://localhost:5000/userSpyder/")
-    print(res)
+    pass
+    # httpApi = HttpApiTest()
+    # res = httpApi.testGet("http://localhost:5000/userSpyder/")
+    # print(res)
     # a = uuid.uuid1().int >> 64
     # print(int(a) / 8)
     # pass

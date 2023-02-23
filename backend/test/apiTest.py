@@ -1,6 +1,8 @@
 # 接口测试
 import requests
 
+import uuid
+
 
 # 发http请求，做接口单元测试
 class HttpApiTest:
@@ -23,6 +25,7 @@ class HttpApiTest:
     def testGet(self, url, data={}):
         res = requests.get(url, params=data)
         return res.text
+
 
 # 普通用户登录接口测试
 def loginUserTest():
@@ -48,6 +51,7 @@ def loginUserTest():
         "user_permission": 0
     })
     print(res)
+
 
 # 管理员登录接口测试
 def loginAdmainTest():
@@ -77,8 +81,14 @@ def registerTest():
     })
     print(res)
 
+
 if __name__ == '__main__':
-    pass
+    httpApi = HttpApiTest()
+    res = httpApi.testGet("http://localhost:5000/userSpyder/")
+    print(res)
+    # a = uuid.uuid1().int >> 64
+    # print(int(a) / 8)
+    # pass
     # 通过
     # loginUserTest()
     # loginAdmainTest()

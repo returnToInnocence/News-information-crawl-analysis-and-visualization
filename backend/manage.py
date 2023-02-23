@@ -1,4 +1,6 @@
 # 项目入口文件
+import uuid
+
 from flask import Flask, jsonify, request
 
 # 解决浏览器同源策略导致的跨域问题
@@ -12,6 +14,18 @@ from database import db
 
 # 导入数据库配置
 from config import *
+
+from spyder.spyderSouhu import *
+
+# 引入定时器，用来定时对网站进行爬取，以二十四小时为时间
+from flask_apscheduler import APScheduler
+import time
+
+class Config(object):
+    SCHEDULER_TIMEZONE = 'Asia/Shanghai'  # 配置时区
+    SCHEDULER_API_ENABLED = True  # 添加API
+
+scheduler = APScheduler()
 
 # 实例化flask
 app = Flask(__name__)
@@ -110,8 +124,61 @@ CORS(app, cors_allowed_origins="*")
 #     res = "good"
 #     return jsonify({"data": res})
 
+# 搜狐新闻爬取
+def spyderSouHu():
+    a = 0
+    # 爬取网页，获取数据
+    baseurl = "https://www.sohu.com"
+    Datalist1, Datalist2, Datalist3, Datalist4, Datalist5, a = getData(baseurl, a)
+    # 保存数据
+    for i in range(0, a):
+        # 新闻标题
+        news_title = ''.join('%s' % a for a in Datalist1[i - 1])
+        # 新闻文本
+        news_content = ''.join('%s' % a for a in Datalist2[i - 1])
+        # 新闻链接
+        news_url = ''.join('%s' % a for a in Datalist3[i - 1])
+        # 新闻热度
+        news_hot = ''.join('%s' % a for a in Datalist4[i - 1])
+        # 新闻时间
+        news_time = ''.join('%s' % a for a in Datalist5[i - 1])
+        if news_title == '' or news_content == '':
+            continue
+
+        news_time = news_time.split(' ')[0]
+        # 先确定是否存在同名的
+        _sql = " select `news_id` from `news_bs4` where `news_title` = '{}'".format(
+            news_title)
+        print(_sql)
+        newExist = db.session.execute(text(_sql)).fetchone()
+        print(newExist)
+        if newExist:
+            print("这个文章的标题有相同的")
+            continue
+        else:
+            print("这个文章的标题没有相同的")
+            # 确定每次生成的news_id都是唯一的
+            while True:
+                news_id = str(uuid.uuid1().int >> 64)
+                _sql = " select `news_title` from `news_bs4` where `news_id` = '{}'".format(
+                    news_id)
+                print(_sql)
+                newIdExist = db.session.execute(text(_sql)).fetchone()
+                if newIdExist:
+                    print("这篇文章的id存在")
+                    continue
+                else:
+                    print("这篇文章的id不存在")
+                    break
+            _sql = "insert into `news_bs4` (`news_id`, `news_title`, `news_source`, `news_time`, `news_content`, `news_url`)" \
+                   " values ('{}' , '{}', '{}', '{}', '{}', '{}')".format(news_id, news_title, "搜狐新闻", news_time, news_content, news_url)
+            print(_sql)
+            db.session.execute(text(_sql))
+    print("保存完毕")
+
+
 def loginUser(user_id, user_password):
-    _sql = " select `user_name`, `user_password` from `user_info` where `user_id` = {} limit 1".format(
+    _sql = " select `user_name`, `user_password` from `user_info` where `user_id` = '{}' limit 1".format(
         user_id)
     print(_sql)
     user = db.session.execute(text(_sql)).fetchone()
@@ -191,10 +258,18 @@ def register():
         }
     return res
 
-
-
+@app.route("/userSpyder/", methods=["GET"])
+def userSpyder():
+    spyderSouHu()
+    return jsonify({"errcode": "没问题"})
 
 
 if __name__ == '__main__':
+    app.config.from_object(Config())
+    scheduler.init_app(app)
+    # add_job() 添加任务
+    # 每过12小时，向数据库中添加一次信息
+    scheduler.add_job(func=spyderSouHu, args=(), trigger='interval', hours=12, id='interval_task')
+    scheduler.start()
     # debug模式开启
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000, use_reloader=False)

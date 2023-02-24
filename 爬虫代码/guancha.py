@@ -138,7 +138,7 @@ def askURL(url):
 
 
 if __name__ == "__main__":
-    start = time.time()
+    # start = time.time()
     main()
-    end = time.time()
-    print(end-start)
+    # end = time.time()
+    # print(end-start)

@@ -91,6 +91,8 @@ def getArticleTest():
 
 
 if __name__ == '__main__':
+    httpApi = HttpApiTest()
+    res = httpApi.testGet("http://localhost:5000/fillSummary/")
     pass
     # httpApi = HttpApiTest()
     # res = httpApi.testGet("http://localhost:5000/userSpyder/")

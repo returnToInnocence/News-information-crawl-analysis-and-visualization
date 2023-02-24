@@ -242,6 +242,27 @@ def register():
         }
     return res
 
+
+# 数据库summary字段填充，就一直用这个方法吧，先不优化了，实现功能优先
+@app.route("/fillSummary/", methods=["GET"])
+def fillSummary():
+    # SELECT
+    # `news_id`, `news_title`, `news_content`
+    # FROM
+    # news_bs4
+    _sql = "SELECT `news_id`, `news_title`, `news_content` FROM news_bs4"
+    newsRowList = db.session.execute(text(_sql)).fetchall()
+    newsList = []
+    for item in newsRowList:
+        data = tuple(item)
+        tmp = {key: value for key, value in zip(['news_id', 'news_title', 'news_content'], data)}
+        newsList.append(tmp)
+    # print(newsList)
+    for item in newsList:
+        print(item)
+    return jsonify({"res":"good"})
+
+
 # 爬虫测试用的
 # @app.route("/userSpyder/", methods=["GET"])
 # def userSpyder():
@@ -250,7 +271,7 @@ def register():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
 
     # 现在调试的时候先不启动计时器
     # 感觉有点浪费资源

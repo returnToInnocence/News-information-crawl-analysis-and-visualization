@@ -1,7 +1,7 @@
-# coding=gbk
+
+# coding:gbk
 from bs4 import BeautifulSoup  # 网页解析，获取数据
 import re  # 正则表达式，进行文字匹配
-import urllib.request,urllib.error  # 制定URL，获取网页数据
 import requests
 import multiprocessing
 import random
@@ -15,7 +15,6 @@ import time
 Maxnum = multiprocessing.cpu_count()
 # 创建正则表达式对象，表示规则
 findlink = re.compile(' href="(.*?)"')  #网页地址
-#findbt = re.compile('原标题:(.*?)<')  #新闻标题
 findrn = re.compile('/a/(.*?)_')       #浏览量
 findnr1 = re.compile('<p>(.*?)</p>')
 findnr2 = re.compile('<span>(.*?)</span>')
@@ -32,9 +31,8 @@ def main():
         url = urls[i-1]
         url = str(url).replace('[','').replace(']','').replace("'",'')
         urlque.put(url)
-    print(urlque)
 
-    csvfile = open('demo.csv', 'a', newline='', encoding='utf-8')
+    csvfile = open('sohu.csv', 'a', newline='', encoding='utf-16')
     header = ['标题', '正文', '链接', '阅读量', '时间']
     writer = csv.DictWriter(csvfile, header)
     writer.writeheader()
@@ -46,24 +44,22 @@ def main():
 
 
 def geturl(dataurl,datalist):
-    times = 0
     html = askURL(dataurl)
     soup = BeautifulSoup(html, "html.parser")
     for item in soup.select('.list16'):
-        if times < 50:
-            for c in item.select('li'):
-                data = []
-                Link = findlink.findall(str(c))
-                Link = str(Link)
-                Link = Change(Link)
-                if 'sohu.com' in Link or Link == '':
-                    continue
-                else:
-                    Link1 = "https://www.sohu.com" + Link
+        for c in item.select('li'):
+            data = []
+            Link = findlink.findall(str(c))
+            Link = str(Link)
+            Link = Change(Link)
+            if 'sohu.com' in Link or Link == '':
+                continue
+            else:
+                Link1 = "https://www.sohu.com" + Link
 
-                data.append(Link1)
-                data = Change(str(data))
-                datalist.append(data)
+            data.append(Link1)
+            data = Change(str(data))
+            datalist.append(data)
     return datalist
 
 
@@ -72,7 +68,7 @@ def getData(url, writer):
     soup = BeautifulSoup(html, "html.parser")
     Linkjs = findrn.findall(url)  # 浏览量的js网址
     Linkjs = Change(str(Linkjs))
-    bt = ""
+    bt = []
     for item1 in soup.select('h1'):
         bt = re.sub('<.*?>', "", str(item1))
         bt = ''.join(bt)
@@ -96,7 +92,6 @@ def getData(url, writer):
     nr1 = nr1.replace('[', '')
     nr1 = nr1.replace(']', '')
     nr1 = nr1.replace("',", '')
-    nr1 = nr1.replace("'", '')
     nr1 = nr1.replace("返回搜狐，查看更多", '') # 正文获取完成
 
         # 浏览量获取
@@ -106,6 +101,10 @@ def getData(url, writer):
     soupjs = str(soupjs)
     soupjs = soupjs.replace('(', '').replace(')', '') # 浏览量获取完成
     if len(nr1) != 0 and len(bt) != 0:
+        bt = bt + '@@'
+        nr1 = nr1 + '@@'
+        url = url + '@@'
+        soupjs = soupjs + '@@'
         writer.writerow({'标题': bt, '正文': nr1, '链接': url, '阅读量': soupjs, '时间': ti})
 
 
@@ -138,7 +137,7 @@ def askURL(url):
 
 
 if __name__ == "__main__":
-    # start = time.time()
+    start = time.time()
     main()
-    # end = time.time()
-    # print(end-start)
+    end = time.time()
+    print(end-start)

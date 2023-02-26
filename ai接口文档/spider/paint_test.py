@@ -1,3 +1,5 @@
+# 热度排行
+
 import matplotlib
 import random
 import matplotlib.pyplot as plt
@@ -7,6 +9,7 @@ matplotlib.rc('font', family='SimHei', weight='bold')
 plt.rcParams['axes.unicode_minus'] = False
 
 # 城市数据。
+# 所以我要先数据库排序拿前五的名字和热度
 news_name = ['胡鑫宇遗体发现地金鸡山：山上荆棘密布 紧挨其学校', '上海', '广州', '深圳', '成都']
 
 # # 数组反转。

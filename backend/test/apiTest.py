@@ -4,7 +4,7 @@ import requests
 import uuid
 
 
-# 发http请求，做接口单元测试
+# 写个做接口单元测试的小工具
 class HttpApiTest:
 
     # 测试delete请求方式（删除接口)
@@ -89,10 +89,22 @@ def getArticleTest():
     })
     print(res)
 
-
-if __name__ == '__main__':
+# 数据库summary文章填充接口测试
+def fillSummaryTest():
     httpApi = HttpApiTest()
     res = httpApi.testGet("http://localhost:5000/fillSummary/")
+    print(res)
+
+
+def basicDataSaveTest():
+    httpApi = HttpApiTest()
+    res = httpApi.testGet("http://localhost:5000/basicDataSave/")
+    print(res)
+
+
+if __name__ == '__main__':
+    # fillSummaryTest()
+    basicDataSaveTest()
     pass
     # httpApi = HttpApiTest()
     # res = httpApi.testGet("http://localhost:5000/userSpyder/")

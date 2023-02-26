@@ -1,10 +1,12 @@
 # coding:gbk
+import random
 import re  # 正则表达式，进行文字匹配
 import urllib.error  # 制定URL，获取网页数据
 import urllib.request
 
 import time
 
+import requests
 from bs4 import BeautifulSoup  # 网页解析，获取数据
 
 # 创建正则表达式对象，表示规则
@@ -101,7 +103,7 @@ def getData(baseurl, a):
                 datalist3.append(data3)
                 datalist4.append(data4)
                 datalist5.append(data5)
-                time.sleep(180)
+                time.sleep(70)
                 print("完成%.3d条" % a)
     print("全部完成")
     print("共保存%.3d条新闻数据" % a)
@@ -119,17 +121,60 @@ def Change(txt):
 # 得到指定URL的网页内容
 
 def askURL(url):
+    ipList = [
+        "{'HTTP': '27.42.168.46:55481'}\n",
+        "{'HTTP': '121.13.252.61:41564'}\n",
+        "{'HTTP': '202.109.157.63:9000'}\n",
+        "{'HTTP': '121.13.252.62:41564'}\n",
+        "{'HTTP': '121.13.252.60:41564'}\n",
+        "{'HTTP': '210.5.10.87:53281'}\n",
+        "{'HTTP': '183.236.232.160:8080'}\n",
+        "{'HTTP': '117.114.149.66:55443'}\n",
+        "{'HTTP': '222.74.73.202:42055'}\n",
+        "{'HTTP': '117.93.180.62:9000'}\n",
+        "{'HTTP': '27.42.168.46:55481'}\n",
+        "{'HTTP': '61.216.185.88:60808'}\n",
+        "{'HTTP': '61.216.156.222:60808'}\n",
+        "{'HTTP': '182.34.102.50:9999'}\n",
+        "{'HTTP': '210.5.10.87:53281'}\n",
+        "{'HTTP': '183.236.232.160:8080'}\n",
+        "{'HTTP': '117.41.38.19:9000'}\n",
+        "{'HTTP': '112.14.47.6:52024'}\n",
+        "{'HTTP': '222.74.73.202:42055'}\n",
+        "{'HTTP': '116.9.163.205:58080'}\n",
+        "{'HTTP': '202.109.157.66:9000'}\n",
+        "{'HTTP': '27.42.168.46:55481'}\n",
+        "{'HTTP': '121.13.252.61:41564'}\n",
+        "{'HTTP': '121.13.252.58:41564'}\n",
+        "{'HTTP': '182.34.102.50:9999'}\n",
+        "{'HTTP': '121.13.252.60:41564'}\n",
+        "{'HTTP': '210.5.10.87:53281'}\n",
+        "{'HTTP': '183.236.232.160:8080'}\n",
+        "{'HTTP': '121.13.252.62:41564'}\n",
+        "{'HTTP': '117.41.38.19:9000'}\n",
+        "{'HTTP': '112.14.47.6:52024'}\n",
+        "{'HTTP': '116.9.163.205:58080'}\n",
+        "{'HTTP': '202.109.157.66:9000'}\n",
+        "{'HTTP': '27.42.168.46:55481'}\n",
+        "{'HTTP': '61.216.185.88:60808'}\n",
+        "{'HTTP': '61.216.156.222:60808'}\n",
+        "{'HTTP': '202.109.157.63:9000'}\n",
+        "{'HTTP': '121.13.252.60:41564'}\n",
+        "{'HTTP': '210.5.10.87:53281'}\n",
+        "{'HTTP': '183.236.232.160:8080'}\n",
+        "{'HTTP': '121.13.252.62:41564'}\n",
+        "{'HTTP': '112.14.47.6:52024'}\n"
+    ]
+    # 遍历并分别存入列表，方便随机选取IP
+    item = []
+    for proxies in ipList:
+        proxies = eval(proxies.replace('\n', ''))  # 以换行符分割，转换为dict对象
+        item.append(proxies)
+    proxies = random.choice(item)  # 随机选取一个IP
+
     head = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763"}
     # 模拟浏览器头部信息，向服务器发送消息
-    request = urllib.request.Request(url, headers=head)
     html = ""
-    try:
-        response = urllib.request.urlopen(request)
-        html = response.read().decode("utf-8", 'ignore')
-    except urllib.error.URLError as e:
-        if hasattr(e, "code"):
-            print(e.code)
-        if hasattr(e, "reason"):
-            print(e.reason)
+    html = requests.get(url=url, headers=head, proxies=proxies).text
     return html

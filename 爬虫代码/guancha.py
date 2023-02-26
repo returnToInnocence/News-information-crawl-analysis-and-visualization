@@ -1,4 +1,5 @@
-# coding=gbk
+
+# coding:gbk
 from bs4 import BeautifulSoup  # 网页解析，获取数据
 import re  # 正则表达式，进行文字匹配
 import urllib.request,urllib.error  # 制定URL，获取网页数据
@@ -32,9 +33,8 @@ def main():
         url = urls[i-1]
         url = str(url).replace('[','').replace(']','').replace("'",'')
         urlque.put(url)
-    print(urlque)
 
-    csvfile = open('demo.csv', 'a', newline='', encoding='utf-8')
+    csvfile = open('demo.csv', 'a', newline='', encoding='gbk')
     header = ['标题', '正文', '链接', '阅读量', '时间']
     writer = csv.DictWriter(csvfile, header)
     writer.writeheader()
@@ -72,7 +72,7 @@ def getData(url, writer):
     soup = BeautifulSoup(html, "html.parser")
     Linkjs = findrn.findall(url)  # 浏览量的js网址
     Linkjs = Change(str(Linkjs))
-    bt = ""
+
     for item1 in soup.select('h1'):
         bt = re.sub('<.*?>', "", str(item1))
         bt = ''.join(bt)
@@ -138,7 +138,7 @@ def askURL(url):
 
 
 if __name__ == "__main__":
-    # start = time.time()
+    start = time.time()
     main()
-    # end = time.time()
-    # print(end-start)
+    end = time.time()
+    print(end-start)

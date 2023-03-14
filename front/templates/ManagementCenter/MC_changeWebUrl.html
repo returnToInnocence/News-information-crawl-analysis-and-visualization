@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-编辑来源网站</title>
+    <link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/MC.css">
+
+</head>
+
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+    <div id="topbox">
+        <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+        <span id="M" title="单击退出">管理员</span>
+    </div>
+    <img src="./管理员头像.png" alt="头像" id="touxiang">
+    <span id="MC_">
+        管理中心
+    </span>
+    <div id="outbox">
+        <nav class="switch_nav">
+            <a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+            <a href="./MC_Web.html" id="switch_signup" class="switch_btn">网站管理</a>
+            <a href="./MC_user.html" id="switch_signup" class="switch_btn">用户管理</a>
+            <a href="./MC_addNews.html" id="switch_login" class="switch_btn">添加新闻</a>
+            <div class="switch_bottom" id="switch_bottom"></div>
+        </nav>
+        <hr id="highhr">
+        <div id="sheetbox">
+            <ul class="group_input">
+                <li>
+                    <span class="titlename">网站名称:</span><input type="text" id="news_source_name" placeholder="网站名称">
+                </li>
+                <li>
+                    <span class="titlename">网站URL:</span><input type="text" id="news_source_link" placeholder="网站URL">
+                </li>
+            </ul>
+            <button type="submit" class="submit_btn" id="submitButton">提交</button>
+            <button class="submit_btn" id="cancle">返回</button>
+        </div>
+    </div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        var webName;
+        window.onload = function () {
+            var url = location.search;
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                webName = str.substring(8);
+                webName = decodeURI(webName)
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/mcChangeWebUrlOnload/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "webName": webName
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            console.log(res)
+                            document.getElementById("news_source_name").value = res.data.news_source_name;
+                            document.getElementById("news_source_link").value = res.data.news_source_link;
+                        } else {
+                            alert("服务器故障，需要排错");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        }
+
+
+        //单击左上角管理员返回登录界面
+        document.getElementById("M").onclick = function () {
+            location.replace("../login.html");
+        };
+
+        document.getElementById("submitButton").onclick = function () {
+            // console.log(document.getElementById("news_source_name").value)
+            $.ajax({
+                url: 'http://127.0.0.1:5000/updateWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("news_source_name").value,
+                    "news_source_link": document.getElementById("news_source_link").value,
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("更新成功");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+    </script>
+</body>
+
+</html>

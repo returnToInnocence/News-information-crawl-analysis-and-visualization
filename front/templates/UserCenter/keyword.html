@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<title>管理员-新闻管理</title>
+	<link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+	<link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+	<link rel="stylesheet" href="../../assets/css/base.css">
+	<link rel="stylesheet" href="../../assets/css/MC.css">  
+</head>
+<body>
+    <div id="particles-js"></div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+	<script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="../../assets/libs/particles/particles.min.js"></script>
+	<script src="../../assets/libs/particles/js/app.js"></script>
+        <div id="topbox">
+            <img src="../ManagementCenter/管理员头像-小.png" alt="头像" id="userhand">
+            <span id="U" title="单击我跳转至用户设置">用户未登录</span>
+            <button id="main"><img src="./img/主页.png" alt="主页">主页</button>
+            <button id="keyword" class="click_on"><img src="./img/关键字.png" alt="关键字">关键字</button>
+            <button id="classify"><img src="./img/分类.png" alt="分类">分类</button>
+            <button id="visual"><img src="./img/可视化.png" alt="可视化">可视化</button>
+        </div>
+        <div id="news_class">
+            <img src="./img/关键字.png" alt="关键字" class="class_img">
+            <span class="class_title">关键字</span>
+            <button id="GCZnews" class="GCZ News_button_on" onclick="changeToGCZ()">观察者网</button>
+            <button id="SHnews" class="SH" onclick="changeToSH()">搜狐新闻</button>
+        </div>
+        <img src="./img/军事_词云.png" alt="图片请求失败" id="wordCloud">
+    <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        } 
+        var imgUrl = "";
+        window.onload = function (){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/visualKeyWord/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({}),
+                // 如果请求成功做的处理
+                success: function(res){
+                    if (res.errcode == 0){
+                        console.log(res);
+                        imgUrl = "http://127.0.0.1:5000/"+res.imgUrl; 
+                        $("#wordCloud").attr("src", imgUrl)
+                        document.getElementById("U").innerHTML = getCookie("user_name");
+                    }else{
+                        //alert("图片请求失败，请检查后端代码");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function(e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+			})
+        }
+        function changeToGCZ(){
+            $("#wordCloud").attr("src", imgUrl)
+            $("#GCZnews").attr("class","GCZ News_button_on");
+            $("#SHnews").attr("class","SH");
+        }
+        function changeToSH(){
+            $("#wordCloud").attr("src", imgUrl)
+            $("#GCZnews").attr("class","GCZ");
+            $("#SHnews").attr("class","SH News_button_on");
+        }
+        document.getElementById("main").onclick=function(){
+            location.replace("./main/main.html");
+        };
+        document.getElementById("classify").onclick=function(){
+            location.replace("./classify/classify.html")
+        };
+        document.getElementById("visual").onclick=function(){
+            location.replace("./visual.html")
+        };
+        document.getElementById("U").onclick=function(){
+            location.replace("./userSetting.html");
+        };
+    </script>
+</body>
+</html>

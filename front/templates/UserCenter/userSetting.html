@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-新闻管理</title>
+    <link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/MC.css">
+</head>
+
+<body onload="loadFun();">
+    <div id="particles-js"></div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <div id="topbox">
+        <img src="../ManagementCenter/管理员头像-小.png" alt="头像" id="userhand">
+        <span id="U" title="点我退出登录">退出登录</span>
+        <button id="main"><img src="./img/主页.png" alt="主页">主页</button>
+        <button id="keyword"><img src="./img/关键字.png" alt="关键字">关键字</button>
+        <button id="classify"><img src="./img/分类.png" alt="分类">分类</button>
+        <button id="visual"><img src="./img/可视化.png" alt="可视化">可视化</button>
+    </div>
+    <img src="./img/个人资料.png" alt="个人资料" id="dataimg">
+    <span id="datafont">个人资料</span>
+
+    <div id="databox">
+        <span id="basedata">基本信息</span>
+        <img src="./img/注销账号.png" alt="注销账号" id="deldataimg">
+        <span id="deldatafont">注销账号</span>
+        <hr id="datahr">
+        <img src="./img/用户头像大.png" alt="头像" id="userheadbig">
+        <span id="name1">昵称：</span>
+        <span id="password1">密码：</span>
+        <input type="text" class="name2 required" value="" id="name2">
+        <input type="password" class="password2 required" value="" id="password2">
+        <!-- <button type="submit" id="btnSubmit1" onclick="sendSubmit()">修改昵称</button> -->
+        <button type="button" id="btnSubmit2">修改密码</button>
+    </div>
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function clearAllCookie() {
+            setCookie("user_id", "暂未登录")
+            setCookie("user_name", "暂未登录")
+            setCookie("user_password", "暂未登录")
+        }
+        var user_id;
+        var user_name;
+        var user_password;
+        function loadFun() {
+            user_id = getCookie("user_id");
+            user_name = getCookie("user_name");
+            user_password = getCookie("user_password");
+            document.getElementById("name2").value = user_name;
+            document.getElementById("password2").value = user_password;
+        }
+        document.getElementById("deldataimg").onclick = function () {
+            var flag = window.confirm("确定要注销账号么!如果注销账号会导致所有数据丢失!");
+            if (flag) {
+                clearAllCookie();
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/deleteUser/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "user_id": user_id
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            alert('删除用户成功！');
+                            window.location.href = "../login.html";
+                        } else {
+                            alert("删除失败，后端有bug");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        }
+        document.getElementById("deldatafont").onclick = function () {
+            var flag = window.confirm("确定要注销账号么!如果注销账号会导致所有数据丢失!");
+            if (flag) {
+                clearAllCookie();
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/deleteUser/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "user_id": user_id
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            alert('删除用户成功！');
+                            window.location.href = "../login.html";
+                        } else {
+                            alert("删除失败，后端有bug");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        }
+        document.getElementById("U").onclick = function () {
+            location.replace("../login.html");
+            setCookie("user_id", "");
+            setCookie("user_name", "");
+            setCookie("user_password", "");
+        }
+        document.getElementById("main").onclick = function () {
+            location.replace("./main/main.html");
+        };
+        document.getElementById("keyword").onclick = function () {
+            location.replace("./keyword.html")
+        };
+        document.getElementById("classify").onclick = function () {
+            location.replace("./classify/classify.html")
+        };
+        document.getElementById("visual").onclick = function () {
+            location.replace("./visual.html")
+        };
+        document.getElementById("btnSubmit2").onclick = function () {
+            alert('进入！');
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mcUpdateUserPassword/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_password": document.getElementById("password2").value,
+                    "user_id": user_id
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("修改成功");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        };
+
+    </script>
+</body>
+
+</html>

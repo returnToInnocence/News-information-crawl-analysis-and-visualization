@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<title>管理员-新闻管理</title>
+	<link rel="stylesheet" href="../../../assets/libs/particles/css/style.css">
+	<link rel="stylesheet" href="../../../assets/libs/sweetalert2/sweetalert2.min.css">
+	<link rel="stylesheet" href="../../../assets/css/base.css">
+	<link rel="stylesheet" href="../../../assets/css/MC.css">  
+</head>
+<body>
+    <div id="particles-js"></div>
+    <script src="../../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+	<script src="../../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="../../../assets/libs/particles/particles.min.js"></script>
+	<script src="../../../assets/libs/particles/js/app.js"></script>
+        <div id="topbox">
+            <img src="../../ManagementCenter/管理员头像-小.png" alt="头像" id="userhand">
+            <span id="U" title="单击我跳转至用户设置">用户昵称</span>
+            <button id="main"><img src="../img/主页.png" alt="主页">主页</button>
+            <button id="keyword"><img src="../img/关键字.png" alt="关键字">关键字</button>
+            <button id="classify" class="click_on"><img src="../img/分类.png" alt="分类">分类</button>
+            <button id="visual"><img src="../img/可视化.png" alt="可视化">可视化</button>
+        </div>
+        <div id="news_class">
+            <img src="../img/分类.png" alt="分类" class="class_img">
+            <span class="class_title">分类</span>
+        </div>
+        <div id="news_classify">
+            <table >
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('国际')">国际</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('体育')">体育</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('娱乐')">娱乐</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('社会')">社会</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('财经')">财经</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('时事')">时事</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('科技')">科技</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('情感')">情感</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('汽车')">汽车</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('教育')">教育</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('时尚')">时尚</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('游戏')">游戏</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('军事')">军事</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('旅游')">旅游</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('美食')">美食</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('文化')">文化</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('健康养生')">健康养生</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('搞笑')">搞笑</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('家居')">家居</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('动漫')">动漫</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('宠物')">宠物</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('母婴育儿')">母婴育儿</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('星座运势')">星座运势</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('历史')">历史</button>
+                    </td>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('音乐')">音乐</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="classify_btn" onmouseenter="bluebtn(this)" onmouseleave="normalbtn(this)" onclick="jumpToNews('综合')">综合</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        } 
+        window.onload = function (){
+            document.getElementById("U").innerHTML = getCookie("user_name");
+        }
+        function bluebtn(x){
+            x.style.background="#0f88eb52" ;
+        }
+        function normalbtn(x){
+            x.style.background="#EFEFEF";
+        }
+        function jumpToNews(classify){
+            location.replace("./classify_News.html?classify=" + encodeURI(classify));
+        }
+        document.getElementById("main").onclick=function(){
+            location.replace("../main/main.html");
+        };
+        document.getElementById("keyword").onclick=function(){
+            location.replace("../keyword.html");
+        };
+        document.getElementById("visual").onclick=function(){
+            location.replace("../visual.html");
+        };
+        document.getElementById("U").onclick=function(){
+            location.replace("../userSetting.html");
+        };
+    </script>
+</body>
+</html>

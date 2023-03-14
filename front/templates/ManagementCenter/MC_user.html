@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-用户管理</title>
+    <link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/MC.css">
+</head>
+
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+    <div id="topbox">
+        <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+        <span id="M">管理员</span>
+    </div>
+    <img src="./管理员头像.png" alt="头像" id="touxiang">
+    <span id="MC_">
+        管理中心
+    </span>
+    <div id="outbox">
+        <nav class="switch_nav">
+            <a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+            <a href="./MC_Web.html" id="switch_login" class="switch_btn">网站管理</a>
+            <a href="javascript:;" id="switch_login" class="switch_btn on">用户管理</a>
+            <a href="./MC_addNews.html" id="switch_signup" class="switch_btn">添加新闻</a>
+            <div class="switch_bottom" id="switch_bottom"></div>
+        </nav>
+        <hr id="highhr">
+        <div id="sheetbox">
+            <table id="sheet">
+                <tr id="sheettop">
+                    <td>用户名</td>
+                    <td>账号(手机号)</td>
+                    <td>操作</td>
+                </tr>
+                <hr id="sheethr1">
+                <tr>
+                    <td id="userName1"></td>
+                    <td id="userId1"></td>
+                    <td>
+                        <button class="change" id="resetpassword1">重设密码</button>
+                        <button class="del" id="deluserdata1">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr2">
+                <tr>
+                    <td id="userName2"></td>
+                    <td id="userId2"></td>
+                    <td>
+                        <button class="change" id="resetpassword2">重设密码</button>
+                        <button class="del" id="deluserdata2">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr3">
+                <tr>
+                    <td id="userName3"></td>
+                    <td id="userId3"></td>
+                    <td>
+                        <button class="change" id="resetpassword3">重设密码</button>
+                        <button class="del" id="deluserdata3">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr4">
+                <tr>
+                    <td id="userName4"></td>
+                    <td id="userId4"></td>
+                    <td>
+                        <button class="change" id="resetpassword4">重设密码</button>
+                        <button class="del" id="deluserdata4">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr5">
+                <tr>
+                    <td id="userName5"></td>
+                    <td id="userId5"></td>
+                    <td>
+                        <button class="change" id="resetpassword5">重设密码</button>
+                        <button class="del" id="deluserdata5">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr6">
+            </table>
+            <ul class="pagination">
+                <li id="subOne">«</li>
+                <li id="pageNum"><span>1</span></li>
+                <li id="addOne">»</li>
+            </ul>
+        </div>
+    </div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        var pageNumVal = 1;
+        window.onload = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mcUserOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        console.log(res);
+                        dataLen = res.data.length;
+                        var index = 1;
+                        while (dataLen != 0) {
+                            console.log(index)
+                            eleId = "userName" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].user_name;
+                            eleId = "userId" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].user_id;
+                            dataLen = dataLen - 1;
+                            index = index + 1;
+                        }
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+        document.getElementById("resetpassword1").onclick = function () { location.replace("./MC_changeUser.html?userId=" + encodeURI(document.getElementById("userId1").innerHTML)); };
+        document.getElementById("resetpassword2").onclick = function () { location.replace("./MC_changeUser.html?userId=" + encodeURI(document.getElementById("userId2").innerHTML)); };
+        document.getElementById("resetpassword3").onclick = function () { location.replace("./MC_changeUser.html?userId=" + encodeURI(document.getElementById("userId3").innerHTML)); };
+        document.getElementById("resetpassword4").onclick = function () { location.replace("./MC_changeUser.html?userId=" + encodeURI(document.getElementById("userId4").innerHTML)); };
+        document.getElementById("resetpassword5").onclick = function () { location.replace("./MC_changeUser.html?userId=" + encodeURI(document.getElementById("userId5").innerHTML)); };
+
+        $("#subOne").click(function () {
+            if (pageNumVal == 1) {
+                alert("已经到首页了");
+            }
+            else {
+                pageNumVal = pageNumVal - 1;
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/mcUserOnload/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "pageNum": pageNumVal - 1
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            console.log(res);
+                            dataLen = res.data.length;
+                            var index = 1;
+                            while (dataLen != 0) {
+                                eleId = "userName" + index.toString();
+                                document.getElementById(eleId).innerHTML = res.data[index - 1].user_name;
+                                eleId = "userId" + index.toString();
+                                document.getElementById(eleId).innerHTML = res.data[index - 1].user_id;
+                                dataLen = dataLen - 1;
+                                index = index + 1;
+                            }
+                            document.getElementById("pageNum").innerHTML = pageNumVal;
+                        } else {
+                            pageNumVal = pageNumVal + 1;
+                            alert("服务器故障，需要排错");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        })
+        $("#addOne").click(function () {
+            dataLen = 5;
+            var index = 1;
+            while (dataLen != 0) {
+                eleId = "userName" + index.toString();
+                document.getElementById(eleId).innerHTML = "";
+                eleId = "userId" + index.toString();
+                document.getElementById(eleId).innerHTML = "";
+                dataLen = dataLen - 1;
+                index = index + 1;
+            }
+            pageNumVal = pageNumVal + 1;
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mcUserOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        console.log(res);
+                        dataLen = res.data.length;
+                        var index = 1;
+                        while (dataLen != 0) {
+                            eleId = "userName" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].user_name;
+                            eleId = "userId" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].user_id;
+                            dataLen = dataLen - 1;
+                            index = index + 1;
+                        }
+                        document.getElementById("pageNum").innerHTML = pageNumVal;
+                    } else {
+                        pageNumVal = pageNumVal - 1;
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        })
+
+
+        document.getElementById("deluserdata1").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteUser/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_id": document.getElementById("userId1").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("deluserdata2").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteUser/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_id": document.getElementById("userId2").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("deluserdata3").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteUser/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_id": document.getElementById("userId3").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("deluserdata4").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteUser/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_id": document.getElementById("userId4").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("deluserdata5").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteUser/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "user_id": document.getElementById("userId5").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+        document.getElementById("M").onclick = function () {
+            location.replace("../login.html");
+        };
+
+
+    </script>
+</body>
+
+</html>

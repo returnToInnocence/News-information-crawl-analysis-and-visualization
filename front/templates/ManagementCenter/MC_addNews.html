@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<title>管理员-添加新闻</title>
+	<link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+	<link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+	<link rel="stylesheet" href="../../assets/css/base.css">
+	<link rel="stylesheet" href="../../assets/css/MC.css">
+    
+</head>
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+    <div id="topbox">
+        <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+        <span id="M" title="单击退出">管理员</span>
+    </div>
+    <img src="./管理员头像.png" alt="头像" id="touxiang">
+    <span id="MC_">
+        管理中心
+    </span>
+    <div id="outbox">
+        <nav class="switch_nav">
+            <a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+            <a href="./MC_Web.html" id="switch_signup" class="switch_btn">网站管理</a>
+            <a href="./MC_user.html" id="switch_signup" class="switch_btn">用户管理</a>
+            <a href="./MC_addNews.html" id="switch_login" class="switch_btn">添加新闻</a>
+            <div class="switch_bottom" id="switch_bottom"></div>
+        </nav>
+        <hr id="highhr">
+        <div id="sheetbox">
+            <ul class="group_input">
+                <li>
+                    <span class="titlename">新闻标题:</span><input type="text" id="news_title" placeholder="新闻标题">
+                </li>
+                <li>
+                    <span class="titlename">新闻正文:</span><input type="text" id="news_content" placeholder="新闻正文">
+                </li>
+                <li>
+                    <span class="titlename">新闻文章网址:</span><input type="text" id="news_url" placeholder="新闻文章网址">
+                </li>
+                <li>
+                    <span class="titlename">新闻热度:</span><input type="text" id="news_fever" placeholder="新闻热度">
+                </li>
+                <li>
+                    <span class="titlename">新闻时间:</span><input type="text" id="news_time" placeholder="新闻时间(格式xxxx-xx-xx)">
+                </li>
+                <li>
+                    <span class="titlename">新闻来源:</span><input type="text" id="news_source_name" placeholder="新闻来源">
+                </li>
+            </ul>
+            <button type="submit" class="submit_btn" id="submitButton">提交</button>
+            <button class="submit_btn" id="cancle">返回</button>
+        </div>
+    </div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        var news_id;
+
+
+        //单击左上角管理员返回登录界面
+        document.getElementById("M").onclick = function () {
+            location.replace("../login.html");
+        };
+
+        document.getElementById("submitButton").onclick = function (){
+            $.ajax({
+                    url: 'http://127.0.0.1:5000/updateNews/',
+                    type: 'post',
+                    dataType: 'json',
+					contentType: "application/json; charset=utf-8", 
+                    data: JSON.stringify({
+						"news_id": news_id,
+                        "news_title": document.getElementById("news_title").value,
+                        "news_content":document.getElementById("news_content").value,
+                        "news_url": document.getElementById("news_url").value,
+                        "news_fever": document.getElementById("news_fever").value,
+                        "news_time": document.getElementById("news_time").value,
+                        "news_source_name": document.getElementById("news_source_name").value
+					}),
+					// 如果请求成功做的处理
+                    success: function(res){
+						if (res.errcode == 0){
+                            alert("更新成功");
+						}else{
+							alert("服务器故障，需要排错");
+						}
+                    },
+					// 如果请求失败做的处理
+                    error: function(e) {
+						alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+        }
+    </script>
+</body>
+</html>

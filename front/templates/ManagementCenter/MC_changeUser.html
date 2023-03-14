@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-编辑新闻</title>
+    <link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/MC.css">
+
+</head>
+
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+    <div id="topbox">
+        <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+        <span id="M" title="单击退出">管理员</span>
+    </div>
+    <img src="./管理员头像.png" alt="头像" id="touxiang">
+    <span id="MC_">
+        管理中心
+    </span>
+    <div id="outbox">
+        <nav class="switch_nav">
+            <a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+            <a href="./MC_Web.html" id="switch_signup" class="switch_btn">网站管理</a>
+            <a href="./MC_user.html" id="switch_signup" class="switch_btn">用户管理</a>
+            <a href="./MC_addNews.html" id="switch_login" class="switch_btn">添加新闻</a>
+            <div class="switch_bottom" id="switch_bottom"></div>
+        </nav>
+        <hr id="highhr">
+        <div id="sheetbox">
+            <ul class="group_input">
+                <li>
+                    <input type="text" id="UserNewPsd" class="UserNewPsd required" placeholder="请输入新的密码">
+                </li>
+            </ul>
+            <button type="submit" id="submit_btn" class="submit_btn">提交</button>
+            <button class="submit_btn" id="cancle">返回</button>
+        </div>
+    </div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        var userId;
+        window.onload = function () {
+            var url = location.search;
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                userId = str.substring(7);
+                userId = decodeURI(userId);
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/mcChangeUserOnload/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "userId": userId
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            console.log(res)
+                            document.getElementById("UserNewPsd").value = res.user_password;
+                        } else {
+                            alert("服务器故障，需要排错");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        }
+        $(function () {
+            //为表单元素添加失去焦点事件
+            $("form :input").blur(function () {
+                var $parent = $(this).parent();
+                $parent.find(".msg").remove(); //删除以前的提醒元素（find()：查找匹配元素集中元素的所有匹配元素）		
+                //验证密码
+                if ($(this).is("#UserNewPsd")) {
+                    var psdVal = $.trim(this.value);
+                    var regPsd = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/;
+                    if (psdVal == "" || !regPsd.test(psdVal)) {
+                        var errorMsg = " 密码为6-20位字母、数字的组合！";
+                        $parent.append("<span class='msg onError' style='top:60px;left:390px'>" + errorMsg + "</span>");
+                    }
+                    else {
+                        var okMsg = " 输入正确";
+                        $parent.append("<span class='msg onSuccess' style='top:60px;left:390px'>" + okMsg + "</span>");
+                    }
+                }
+            }).keyup(function () {
+                //triggerHandler 防止事件执行完后，浏览器自动为标签获得焦点
+                $(this).triggerHandler("blur");
+            }).focus(function () {
+                $(this).triggerHandler("blur");
+            });
+            $("#submit_btn").click(function () {
+                //trigger 事件执行完后，浏览器会为submit按钮获得焦点
+                $("form :input.required.UserNewPsd").trigger("blur");
+                var numError = $("form .onError").length;
+                if (numError) {
+                    alert("请输入正确的格式")
+                    return false;
+                }
+                else {
+                    $.ajax({
+                        url: 'http://127.0.0.1:5000/mcUpdateUserPassword/',
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            "user_password": document.getElementById("UserNewPsd").value,
+                            "user_id": userId
+                        }),
+                        // 如果请求成功做的处理
+                        success: function (res) {
+                            if (res.errcode == 0) {
+                                alert("修改成功");
+                            } else {
+                                alert("服务器故障，需要排错");
+                            }
+                        },
+                        // 如果请求失败做的处理
+                        error: function (e) {
+                            alert('请求异常！状态码：' + res.code.toString());
+                        },
+                    })
+                }
+            });
+        })
+        //单击左上角管理员返回登录界面
+        document.getElementById("M").onclick = function () {
+            location.replace("../login.html");
+        };
+    </script>
+</body>
+
+</html>

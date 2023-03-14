@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-网站管理</title>
+    <link rel="stylesheet" href="../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/MC.css">
+</head>
+
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+    <div id="topbox">
+        <img src="./管理员头像-小.png" alt="头像" id="xiaotouxiang">
+        <span id="M">管理员</span>
+    </div>
+    <img src="./管理员头像.png" alt="头像" id="touxiang">
+    <span id="MC_">
+        管理中心
+    </span>
+    <div id="outbox">
+        <nav class="switch_nav">
+            <a href="./MC_News.html" id="switch_signup" class="switch_btn">新闻管理</a>
+            <a href="javascript:;" id="switch_login" class="switch_btn on">网站管理</a>
+            <a href="./MC_user.html" id="switch_signup" class="switch_btn">用户管理</a>
+            <a href="./MC_addNews.html" id="switch_signup" class="switch_btn">添加新闻</a>
+            <div class="switch_bottom" id="switch_bottom"></div>
+        </nav>
+        <hr id="highhr">
+        <div id="sheetbox">
+            <table id="sheet">
+                <tr id="sheettop">
+                    <td>网站名称</td>
+                    <td>操作</td>
+                </tr>
+                <hr id="sheethr1">
+                <tr>
+                    <td><a href="" id="webName1"></a></td>
+                    <td>
+                        <button class="change" id="change1">编辑</button>
+                        <button class="del" id="del1">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr2">
+                <tr>
+                    <td><a href="" id="webName2"></a></td>
+                    <td>
+                        <button class="change" id="change2">编辑</button>
+                        <button class="del" id="del2">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr3">
+                <tr>
+                    <td><a href="" id="webName3"></a></td>
+                    <td>
+                        <button class="change" id="change3">编辑</button>
+                        <button class="del" id="del3">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr4">
+                <tr>
+                    <td><a href="" id="webName4"></a></td>
+                    <td>
+                        <button class="change" id="change4">编辑</button>
+                        <button class="del" id="del4">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr5">
+                <tr>
+                    <td><a href="" id="webName5"></a></td>
+                    <td>
+                        <button class="change" id="change5">编辑</button>
+                        <button class="del" id="del5">删除</button>
+                    </td>
+                </tr>
+                <hr id="sheethr6">
+            </table>
+            <ul class="pagination">
+                <li id="subOne">«</li>
+                <li id="pageNum"><span>1</span></li>
+                <li id="addOne">»</li>
+            </ul>
+        </div>
+    </div>
+    <script src="../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../assets/libs/particles/js/app.js"></script>
+    <script>
+        var pageNumVal = 1;
+        window.onload = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mcWebOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        console.log(res);
+                        dataLen = res.data.length;
+                        var index = 1;
+                        // var eleId = "webName" + index;
+                        // document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                        while (dataLen != 0) {
+                            eleId = "webName" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                            document.getElementById(eleId).setAttribute("href", res.data[index - 1].news_source_link);
+                            dataLen = dataLen - 1;
+                            index = index + 1;
+                        }
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        $("#subOne").click(function () {
+            if (pageNumVal == 1) {
+                alert("已经到首页了");
+            }
+            else {
+                pageNumVal = pageNumVal - 1;
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/mcWebOnload/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "pageNum": pageNumVal - 1
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            console.log(res);
+                            dataLen = res.data.length;
+                            var index = 1;
+                            // var eleId = "webName" + index;
+                            // document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                            while (dataLen != 0) {
+                                eleId = "webName" + index.toString();
+                                document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                                document.getElementById(eleId).setAttribute("href", res.data[index - 1].news_source_link);
+                                dataLen = dataLen - 1;
+                                index = index + 1;
+                            }
+                            document.getElementById("pageNum").innerHTML = pageNumVal;
+                        } else {
+                            pageNumVal = pageNumVal + 1;
+                            alert("服务器故障，需要排错");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        })
+        $("#addOne").click(function () {
+            dataLen = 5;
+            var index = 1;
+            while (dataLen != 0) {
+                eleId = "webName" + index.toString();
+                document.getElementById(eleId).innerHTML = "";
+                document.getElementById(eleId).setAttribute("href", "");
+                dataLen = dataLen - 1;
+                index = index + 1;
+            }
+            pageNumVal = pageNumVal + 1;
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mcWebOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        console.log(res);
+                        dataLen = res.data.length;
+                        var index = 1;
+                        // var eleId = "webName" + index;
+                        // document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                        while (dataLen != 0) {
+                            eleId = "webName" + index.toString();
+                            document.getElementById(eleId).innerHTML = res.data[index - 1].news_source_name;
+                            document.getElementById(eleId).setAttribute("href", res.data[index - 1].news_source_link);
+                            dataLen = dataLen - 1;
+                            index = index + 1;
+                        }
+                        document.getElementById("pageNum").innerHTML = pageNumVal;
+                    } else {
+                        pageNumVal = pageNumVal - 1;
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        })
+
+
+        document.getElementById("change1").onclick = function () { location.replace("./MC_changeWebUrl.html?webName=" + encodeURI(document.getElementById("webName1").innerHTML)); };
+        document.getElementById("change2").onclick = function () { location.replace("./MC_changeWebUrl.html?webName=" + encodeURI(document.getElementById("webName2").innerHTML)); };
+        document.getElementById("change3").onclick = function () { location.replace("./MC_changeWebUrl.html?webName=" + encodeURI(document.getElementById("webName3").innerHTML)); };
+        document.getElementById("change4").onclick = function () { location.replace("./MC_changeWebUrl.html?webName=" + encodeURI(document.getElementById("webName4").innerHTML)); };
+        document.getElementById("change5").onclick = function () { location.replace("./MC_changeWebUrl.html?webName=" + encodeURI(document.getElementById("webName5").innerHTML)); };
+        document.getElementById("del1").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("webName1").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("del2").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("webName2").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("del3").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("webName3").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("del4").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("webName4").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+
+        document.getElementById("del5").onclick = function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/deleteWebUrl/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "news_source_name": document.getElementById("webName5").innerHTML
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        alert("删除成功！");
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+        //单击左上角管理员返回登录界面
+        document.getElementById("M").onclick = function () {
+            location.replace("../login.html");
+        };
+    </script>
+</body>
+
+</html>

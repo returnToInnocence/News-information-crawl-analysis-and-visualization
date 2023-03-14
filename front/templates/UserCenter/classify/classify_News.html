@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员-新闻管理</title>
+    <link rel="stylesheet" href="../../../assets/libs/particles/css/style.css">
+    <link rel="stylesheet" href="../../../assets/libs/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../../assets/css/base.css">
+    <link rel="stylesheet" href="../../../assets/css/MC.css">
+</head>
+
+<body>
+    <div id="particles-js"></div>
+    <script src="../../../assets/libs/jquery-1.12.4/jquery.min.js"></script>
+    <script src="../../../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="../../../assets/libs/particles/particles.min.js"></script>
+    <script src="../../../assets/libs/particles/js/app.js"></script>
+    <div id="topbox">
+        <img src="../../ManagementCenter/管理员头像-小.png" alt="头像" id="userhand">
+        <span id="U" title="单击我跳转至用户设置"></span>
+        <button id="main"><img src="../img/主页.png" alt="主页">主页</button>
+        <button id="keyword"><img src="../img/关键字.png" alt="关键字">关键字</button>
+        <button id="classify" class="click_on"><img src="../img/分类.png" alt="分类">分类</button>
+        <button id="visual"><img src="../img/可视化.png" alt="可视化">可视化</button>
+    </div>
+    <div id="news_class">
+        <img src="../img/分类.png" alt="分类" class="class_img">
+        <span class="class_title">分类</span>
+        <span id="newsClassity">新闻分类</span>
+        <img src="../img/新闻分类.png" alt="" id="newsClassityImg">
+    </div>
+
+    <div id="news_class">
+        <img src="../img/主页.png" alt="主页" class="class_img">
+        <span class="class_title">主页</span>
+        <button class="GCZ News_button_on">观察者网</button>
+        <button class="SH" onclick="gotoSH()">搜狐新闻</button>
+    </div>
+    <div class="News_Box Box_One" onclick="gotoNewsUrl()">
+        <div class="News_Title_font" id="News_Title_font1"></div>
+        <div class="News_Headline_font" id="News_Headline_font1">
+            
+        </div>
+        <div class="News_keyword" id="News_keyword1"></div>
+        <div class="News_classfities" id="News_classfities1"></div>
+    </div>
+    <div class="News_Box Box_Two" onclick="gotoNewsUrl()">
+        <div class="News_Title_font" id="News_Title_font2"></div>
+        <div class="News_Headline_font" id="News_Headline_font2">
+            
+        </div>
+        <div class="News_keyword" id="News_keyword2"></div>
+        <div class="News_classfities" id="News_classfities2"></div>
+    </div>
+    <div class="News_Box Box_Three" onclick="gotoNewsUrl()">
+        <div class="News_Title_font" id="News_Title_font3"></div>
+        <div class="News_Headline_font" id="News_Headline_font3">
+            
+        </div>
+        <div class="News_keyword" id="News_keyword3"></div>
+        <div class="News_classfities" id="News_classfities3"></div>
+    </div>
+    <ul class="pagination News_page">
+        <li id="subOne">«</li>
+        <li id="pageNum"><span>1</span></li>
+        <li id="addOne">»</li>
+    </ul>
+    <script>
+        var pageNumVal = 1
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var classifyKeyWord;
+        let sleep = function(fun,time){
+            setTimeout(()=>{
+                fun();
+            },time);
+        }
+        function backPage(){
+            location.replace("../classify/classify.html");
+        }
+        function empty(){
+            document.getElementById("News_Title_font1").innerHTML = "";
+            document.getElementById("News_Headline_font1").innerHTML = "";
+            // 关键字需要连接一下
+            document.getElementById("News_keyword1").innerHTML = "";
+            document.getElementById("News_classfities1").innerHTML = "";
+
+            document.getElementById("News_Title_font2").innerHTML = "";
+            document.getElementById("News_Headline_font2").innerHTML = "";
+            // 关键字需要连接一下
+            document.getElementById("News_keyword2").innerHTML = "";
+            document.getElementById("News_classfities2").innerHTML = "";
+
+            document.getElementById("News_Title_font3").innerHTML = "";
+            document.getElementById("News_Headline_font3").innerHTML = "";
+            // 关键字需要连接一下
+            document.getElementById("News_keyword3").innerHTML = "";
+            document.getElementById("News_classfities3").innerHTML = "";
+        }
+        window.onload = function () {
+            var url = location.search;
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                classifyKeyWord = str.substring(9);
+                document.getElementById("newsClassity").innerHTML = decodeURI(classifyKeyWord);
+                // document.getElementById("U").innerHTML = getCookie("user_name");
+                // document.getElementById("U").innerHTML = "李虹均";
+                alert(document.getElementById("U").innerHTML)
+            }
+            $.ajax({
+                url: 'http://127.0.0.1:5000/classifyPageOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1,
+                    "pageClassify": decodeURI(classifyKeyWord)
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        document.getElementById("News_Title_font1").innerHTML = res.newsList[0].news_title;
+                        document.getElementById("News_Headline_font1").innerHTML = res.newsList[0].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[0][0] + " #" + res.news_keywordList[0][1] + " #" + res.news_keywordList[0][2] + " #" + res.news_keywordList[0][3] + " #" + res.news_keywordList[0][4];
+                        document.getElementById("News_keyword1").innerHTML = news_keywords;
+                        document.getElementById("News_classfities1").innerHTML = res.news_classificationList[0]
+
+                        document.getElementById("News_Title_font2").innerHTML = res.newsList[1].news_title;
+                        document.getElementById("News_Headline_font2").innerHTML = res.newsList[1].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[1][0] + " #" + res.news_keywordList[1][1] + " #" + res.news_keywordList[1][2] + " #" + res.news_keywordList[1][3] + " #" + res.news_keywordList[1][4];
+                        document.getElementById("News_keyword2").innerHTML = news_keywords;
+                        document.getElementById("News_classfities2").innerHTML = res.news_classificationList[1]
+
+                        document.getElementById("News_Title_font3").innerHTML = res.newsList[2].news_title;
+                        document.getElementById("News_Headline_font3").innerHTML = res.newsList[2].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[2][0] + " #" + res.news_keywordList[2][1] + " #" + res.news_keywordList[2][2] + " #" + res.news_keywordList[2][3] + " #" + res.news_keywordList[2][4];
+                        document.getElementById("News_keyword3").innerHTML = news_keywords;
+                        document.getElementById("News_classfities3").innerHTML = res.news_classificationList[2]
+                    } else if(res.errcode == 1){
+                        alert("此页面无文章，2秒后跳转回分类页面")
+                        empty();
+                        sleep(backPage, 2000)
+                        
+                    }else{
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        }
+        function gotoNewsUrl() { location.replace("#"); }
+        document.getElementById("keyword").onclick = function () {
+            location.replace("../keyword.html");
+        };
+        document.getElementById("classify").onclick = function () {
+            location.replace("../classify/classify.html");
+        };
+        document.getElementById("visual").onclick = function () {
+            location.replace("../visual.html");
+        };
+        document.getElementById("U").onclick = function () {
+            location.replace("../userSetting.html");
+        };
+        $("#subOne").click(function () {
+            if (pageNumVal == 1) {
+                alert("已经到首页了");
+            }
+            else {
+                pageNumVal = pageNumVal - 1;
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/mainPageOnload/',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "pageNum": pageNumVal - 1
+                    }),
+                    // 如果请求成功做的处理
+                    success: function (res) {
+                        if (res.errcode == 0) {
+                            document.getElementById("News_Title_font1").innerHTML = res.newsList[0].news_title;
+                            document.getElementById("News_Headline_font1").innerHTML = res.newsList[0].news_summary;
+                            // 关键字需要连接一下
+                            var news_keywords = "";
+                            news_keywords = "#" + res.news_keywordList[0][0] + " #" + res.news_keywordList[0][1] + " #" + res.news_keywordList[0][2] + " #" + res.news_keywordList[0][3] + " #" + res.news_keywordList[0][4];
+                            document.getElementById("News_keyword1").innerHTML = news_keywords;
+                            document.getElementById("News_classfities1").innerHTML = res.news_classificationList[0]
+
+                            document.getElementById("News_Title_font2").innerHTML = res.newsList[1].news_title;
+                            document.getElementById("News_Headline_font2").innerHTML = res.newsList[1].news_summary;
+                            // 关键字需要连接一下
+                            var news_keywords = "";
+                            news_keywords = "#" + res.news_keywordList[1][0] + " #" + res.news_keywordList[1][1] + " #" + res.news_keywordList[1][2] + " #" + res.news_keywordList[1][3] + " #" + res.news_keywordList[1][4];
+                            document.getElementById("News_keyword2").innerHTML = news_keywords;
+                            document.getElementById("News_classfities2").innerHTML = res.news_classificationList[1]
+
+                            document.getElementById("News_Title_font3").innerHTML = res.newsList[2].news_title;
+                            document.getElementById("News_Headline_font3").innerHTML = res.newsList[2].news_summary;
+                            // 关键字需要连接一下
+                            var news_keywords = "";
+                            news_keywords = "#" + res.news_keywordList[2][0] + " #" + res.news_keywordList[2][1] + " #" + res.news_keywordList[2][2] + " #" + res.news_keywordList[2][3] + " #" + res.news_keywordList[2][4];
+                            document.getElementById("News_keyword3").innerHTML = news_keywords;
+                            document.getElementById("News_classfities3").innerHTML = res.news_classificationList[2]
+                            document.getElementById("pageNum").innerHTML = pageNumVal;
+                        } else {
+                            alert("服务器故障，需要排错");
+                        }
+                    },
+                    // 如果请求失败做的处理
+                    error: function (e) {
+                        alert('请求异常！状态码：' + res.code.toString());
+                    },
+                })
+            }
+        })
+        $("#addOne").click(function () {
+            pageNumVal = pageNumVal + 1;
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mainPageOnload/',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "pageNum": pageNumVal - 1
+                }),
+                // 如果请求成功做的处理
+                success: function (res) {
+                    if (res.errcode == 0) {
+                        document.getElementById("News_Title_font1").innerHTML = res.newsList[0].news_title;
+                        document.getElementById("News_Headline_font1").innerHTML = res.newsList[0].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[0][0] + " #" + res.news_keywordList[0][1] + " #" + res.news_keywordList[0][2] + " #" + res.news_keywordList[0][3] + " #" + res.news_keywordList[0][4];
+                        document.getElementById("News_keyword1").innerHTML = news_keywords;
+                        document.getElementById("News_classfities1").innerHTML = res.news_classificationList[0]
+
+                        document.getElementById("News_Title_font2").innerHTML = res.newsList[1].news_title;
+                        document.getElementById("News_Headline_font2").innerHTML = res.newsList[1].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[1][0] + " #" + res.news_keywordList[1][1] + " #" + res.news_keywordList[1][2] + " #" + res.news_keywordList[1][3] + " #" + res.news_keywordList[1][4];
+                        document.getElementById("News_keyword2").innerHTML = news_keywords;
+                        document.getElementById("News_classfities2").innerHTML = res.news_classificationList[1]
+
+                        document.getElementById("News_Title_font3").innerHTML = res.newsList[2].news_title;
+                        document.getElementById("News_Headline_font3").innerHTML = res.newsList[2].news_summary;
+                        // 关键字需要连接一下
+                        var news_keywords = "";
+                        news_keywords = "#" + res.news_keywordList[2][0] + " #" + res.news_keywordList[2][1] + " #" + res.news_keywordList[2][2] + " #" + res.news_keywordList[2][3] + " #" + res.news_keywordList[2][4];
+                        document.getElementById("News_keyword3").innerHTML = news_keywords;
+                        document.getElementById("News_classfities3").innerHTML = res.news_classificationList[2]
+                        document.getElementById("pageNum").innerHTML = pageNumVal;
+                    } else {
+                        alert("服务器故障，需要排错");
+                    }
+                },
+                // 如果请求失败做的处理
+                error: function (e) {
+                    alert('请求异常！状态码：' + res.code.toString());
+                },
+            })
+        })
+    </script>
+</body>
+
+</html>

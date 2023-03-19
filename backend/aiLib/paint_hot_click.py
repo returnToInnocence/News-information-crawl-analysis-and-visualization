@@ -34,7 +34,6 @@ def paint(news_name, click_num):
     plt.title('今日热点新闻', loc='center', fontsize='25',
               fontweight='bold', color='black', fontstyle="italic")
 
-    png_path = r'C:\Users\dell\Desktop\数据库课程设计GitHub同步\backend\static\今日热点新闻.png'
     plt.savefig(png_path)
     return png_path
 

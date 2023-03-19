@@ -16,5 +16,4 @@ def make_wordcloud(text):
         collocations=False
     )
     w.generate(text)
-    file_path = r"C:\Users\dell\Desktop\数据库课程设计GitHub同步\backend\static\词云.png"
     w.to_file(file_path)

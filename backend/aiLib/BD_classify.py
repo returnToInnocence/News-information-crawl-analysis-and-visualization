@@ -1,12 +1,11 @@
 import requests
 import json
 
-API_KEY = "gyv0NMrt30MsfMFq2NLGrGkm"
-SECRET_KEY = "NnA6iYc1idjjiFSzm52YHO753pEEIsGs"
+
 
 
 def classify(text, title):
-    url = "https://aip.baidubce.com/rpc/2.0/nlp/v1/topic?charset=UTF-8&access_token=" + get_access_token()
+
 
     payload = json.dumps({
         "content": text,
@@ -36,13 +35,13 @@ def get_access_token():
     使用 AK，SK 生成鉴权签名（Access Token）
     :return: access_token，或是None(如果错误)
     """
-    url = "https://aip.baidubce.com/oauth/2.0/token"
+
     params = {"grant_type": "client_credentials", "client_id": API_KEY, "client_secret": SECRET_KEY}
     return str(requests.post(url, params=params).json().get("access_token"))
 
 
 # if __name__ == '__main__':
-#     # with open('C:/Users/CCH/Desktop/f.txt', encoding='utf-8') as file:
+
 #     #     content = file.read()
 #     content = "2月23日，据时间视频报道，2月21日，浙江台州一女生考研结束查分，看到成绩后激动到晕倒住院。  " \
 #               "妈妈蒋女士说，女儿在外租房复习，一整年没有回家。“自己租了一个房子，一个人在努力。也没有手机，我们打电话，她都不接”。 " \
